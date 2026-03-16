@@ -1,39 +1,67 @@
-# FIPS County Code Lookup API + MCP Server
+# MCP FIPS Server
 
-Look up US counties by FIPS code, name, or state. ~3,200 counties from all 50 states, DC, and territories.
+A [Model Context Protocol](https://modelcontextprotocol.io) (MCP) server for looking up US counties by FIPS code, name, or state. Covers all 50 states, DC, and territories.
 
-## Endpoints
+## Tools (4 total)
 
-- `GET /` — API info
-- `GET /health` — health check
-- `GET /lookup?fips=06037` — look up by FIPS code
-- `GET /search?name=los+angeles&state=CA` — search by county name
-- `GET /state/:code` — list all counties in a state (e.g., `/state/06` or `/state/CA`)
-- `POST /lookup/batch` — batch lookup multiple FIPS codes
-- `GET /stats` — county count by state
+| Tool | Description |
+|------|-------------|
+| `fips_lookup` | Look up a county by its 5-digit FIPS code |
+| `fips_search` | Search counties by name, optionally filtered by state |
+| `fips_state` | List all counties in a state by FIPS code or abbreviation |
+| `fips_stats` | Get database statistics: total counties, states, and counts by state |
 
-## MCP Transport
-
-- **Stdio**: run without `PORT` env var
-- **Streamable HTTP**: set `PORT` env var, connect to `/mcp`
-
-## Data Generation
+## Install
 
 ```bash
-npm run build-data
+npx @easysolutions906/mcp-fips
 ```
 
-## Local Development
+### Claude Desktop
 
-```bash
-npm install
-npm run build-data
-npm run dev
+Add to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "fips": {
+      "command": "npx",
+      "args": ["-y", "@easysolutions906/mcp-fips"]
+    }
+  }
+}
 ```
 
-## Deploy
+### Cursor
 
-```bash
-# Railway
-railway up
+Add to `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "fips": {
+      "command": "npx",
+      "args": ["-y", "@easysolutions906/mcp-fips"]
+    }
+  }
+}
 ```
+
+## REST API
+
+Set `PORT` env var to run as an HTTP server.
+
+- `GET /lookup?fips=06037` -- look up county by FIPS code
+- `GET /search?name=los+angeles&state=CA` -- search counties by name
+- `GET /state/:code` -- list all counties in a state (e.g., `/state/CA`)
+- `POST /lookup/batch` -- batch lookup multiple FIPS codes
+- `GET /stats` -- county counts by state
+
+## Data Source
+
+US Census Bureau FIPS county codes. Run `npm run build-data` to regenerate from the latest Census data.
+
+## Transport
+
+- **stdio** (default) -- for local use with Claude Desktop and Cursor
+- **HTTP** -- set `PORT` env var to start in Streamable HTTP mode on `/mcp`
