@@ -1,6 +1,6 @@
 {
   "name": "@easysolutions906/mcp-fips",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "FIPS county code lookup API - search US counties by FIPS code, name, or state",
   "type": "module",
   "main": "src/index.js",
